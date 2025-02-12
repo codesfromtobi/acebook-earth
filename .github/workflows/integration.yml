@@ -9,13 +9,11 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
-
-    # ADDED: MongoDB service configuration
     services:
       mongodb:
-        image: mongo:4.4 # Specifies the MongoDB version
+        image: mongo:5.0
         ports:
-          - 27017:27017 # Maps the port
+          - 27017:27017
 
     steps:
       # Step 1: Check out the code
@@ -30,14 +28,23 @@ jobs:
 
       # Step 3: Install dependencies
       - name: Install Dependencies
-        run: npm install
+        run: npm ci
 
       # Step 4: Run linter
       - name: Run Linter
         run: npm run lint
 
       # Step 5: Run Tests
-      - name: Run tests
+      - name: Run Unit Tests
+        run: npm run test:unit
         env:
-          MONGO_URL: mongodb://localhost/acebook_test # Sets the MongoDB connection string
-        run: npm test
+          MONGODB_URI: mongodb://localhost:27017/acebook_test
+
+      - name: Start Server and Run Integration Tests
+        run: |
+          npm start & 
+          sleep 10
+          npm run test:integration
+        env:
+          MONGODB_URI: mongodb://localhost:27017/acebook_test
+          PORT: 3030
