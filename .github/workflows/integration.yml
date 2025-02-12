@@ -9,6 +9,14 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
+
+    # ADDED: MongoDB service configuration
+    services:
+      mongodb:
+        image: mongo:4.4 # Specifies the MongoDB version
+        ports:
+          - 27017:27017 # Maps the port
+
     steps:
       # Step 1: Check out the code
       - name: Checkout Code
@@ -29,5 +37,7 @@ jobs:
         run: npm run lint
 
       # Step 5: Run Tests
-      - name: Run Tests
+      - name: Run tests
+        env:
+          MONGO_URL: mongodb://localhost/acebook_test # Sets the MongoDB connection string
         run: npm test
