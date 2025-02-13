@@ -21,14 +21,14 @@ jobs:
         aws-region: us-west-2
 
     - name: Create deployment package
-      run: zip -r deploy.zip .
+      run: zip -r myapp.zip .
 
     - name: Upload to S3
-      run: aws s3 cp deploy.zip s3://tobi-ace-bucket/deploy.zip
+      run: aws s3 cp myapp.zip s3://tobi-ace-bucket/myapp.zip
 
     - name: Create CodeDeploy Deployment
       run: |
         aws deploy create-deployment \
           --application-name tobi-acebook \
           --deployment-group-name ace-production \
-          --s3-location bucket=tobi-ace-bucket,bundleType=zip,key=deploy.zip
+          --s3-location bucket=tobi-ace-bucket,bundleType=zip,key=myapp.zip
